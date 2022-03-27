@@ -1,0 +1,31 @@
+.forbidden h1 {
+    font-size: 60vh;
+    text-align: center;
+    position: fixed;
+    /*width: 100vw; */
+    z-index: 1;
+    color: #ffffff26;
+    text-shadow: 0 0 50px rgba(0, 0, 0, 0.12);
+    /* top: 0; */
+    font-family: "Montserrat", monospace;
+}
+
+.forbidden {
+    min-height: 75vh;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.forbidden>div {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.forbidden a {
+    text-decoration: none;
+    z-index: 2;
+}

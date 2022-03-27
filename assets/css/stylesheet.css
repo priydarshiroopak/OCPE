@@ -1,0 +1,71 @@
+:root {
+    --orange: #f94c48;
+    --gray: #2a2e32;
+    --dark-gray: #212529;
+    --off-white: #b2b3b4;
+    --yellow: #ffbb2c;
+  }
+
+  .nav-link:hover {
+      color: white !important;
+  }
+
+  .forbidden h1 {
+    font-size: 60vh;
+    text-align: center;
+    position: fixed;
+    /*width: 100vw; */
+    z-index: 1;
+    color: #ffffff26;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    /* top: 0; */
+    font-family: "Montserrat", monospace;
+}
+
+.forbidden {
+    min-height: 75vh;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.forbidden>div {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.forbidden a {
+    text-decoration: none;
+    z-index: 2;
+}
+
+  .footer {
+    background-color: var(--gray) !important;
+  }
+
+  .footer footer {
+    background: var(--dark-gray) !important;
+  }
+  
+  .footer a {
+    color: inherit !important;
+    text-decoration: none !important;
+    transition: all 0.3s !important;
+  }
+  
+  .footer a:hover, a:focus {
+    color: white !important;
+  }
+  
+  .footer .form-control {
+    background: var(--dark-gray) !important;
+    border-color: #545454 !important;
+    color: white !important;
+  }
+  
+  .footer .form-control:focus {
+    color: white !important;
+  }
