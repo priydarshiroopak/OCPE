@@ -23,46 +23,44 @@
 </head>
 
 <body>
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="{{ url_for('home') }}">OCPE</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
-          aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('contests') }}">Contests</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('problems') }}">Problems</a>
-            </li>
-          </ul>
-          <!-- <a class="navbar-text nav-link py-0" href="{{ url_for('signup') }}">Signup</a>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('home') }}">OCPE</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contests') }}">Contests</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('problems') }}">Problems</a>
+          </li>
+        </ul>
+        <!-- <a class="navbar-text nav-link py-0" href="{{ url_for('signup') }}">Signup</a>
           <a class="navbar-text nav-link py-0" href="{{ url_for('login') }}">Login</a>
           <a class="navbar-text nav-link py-0" href="#">Profile</a> -->
 
-          <div class="navbar-nav">
-            {% if current_user.is_authenticated %}
-            <a class="nav-item nav-link" href="{{ url_for('account') }}">Profile</a>
-            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-            <!-- <a class="navbar-text nav-link py-0" href="#">Profile</a> -->
-            {% else %}
-            <!-- <a class="navbar-text nav-link py-0" href="{{ url_for('login') }}">Login</a>
+        <div class="navbar-nav">
+          {% if current_user.is_authenticated %}
+          <a class="nav-item nav-link" href="{{ url_for('account') }}">Profile</a>
+          <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+          <!-- <a class="navbar-text nav-link py-0" href="#">Profile</a> -->
+          {% else %}
+          <!-- <a class="navbar-text nav-link py-0" href="{{ url_for('login') }}">Login</a>
               <a class="navbar-text nav-link py-0" href="{{ url_for('signup') }}">Signup</a> -->
-            <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-            <a class="nav-item nav-link" href="{{ url_for('signup') }}">Signup</a>
-            {% endif %}
-          </div>
+          <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+          <a class="nav-item nav-link" href="{{ url_for('signup') }}">Signup</a>
+          {% endif %}
         </div>
       </div>
-    </nav>
-  </header>
+    </div>
+  </nav>
 
 
   <main role="main" class="container">
@@ -101,8 +99,8 @@
 
       <!-- !!make this sticky -->
       <!-- Side widgets-->
-      <!--<div class="col-lg-4">
-        <!-- Search widget-->
+      <div class="col-lg-4">
+        <!-- Search widget -->
         <div class="card mb-4">
           <div class="card-header">Search</div>
           <div class="card-body">
@@ -257,7 +255,14 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, "script", "sphere-engine-compilers-jssdk"));
 
-  document.getElementById("footer").style.display = "none";
+  // var removeLabel = function() {
+  //   var label = document.getElementById("footer");
+  //   console.log("hi!")
+  //   if(typeof(label) != 'undefined' && label != null) {
+  //     label.style.display = none;
+  //   }
+  // }
+  
 </script>
 
 </html>
