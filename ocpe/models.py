@@ -30,7 +30,7 @@ class Submission(db.Model):
     __tablename__='submission'
     contestant_id = db.Column(db.Integer, db.ForeignKey('contestant.id'))
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
-
+    code=db.Column(db.Integer,db.ForeignKey('code'))
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     cases_passed = db.Column(db.Integer, default=0)
 
@@ -45,7 +45,8 @@ class Contestant(User):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     rating = db.Column(db.Integer, nullable=False, default=0)
 
-    submissions = db.relationship('Submission', backref='submitter', lazy=True)
+    submissions = db.relationship('Submission', backref='author', lazy=True)
+#     submissions = db.relationship('Submission', backref='submitter', lazy=True)
     # contests = db.relationship('Contest', backref='contestant', lazy=True)
 
     __mapper_args__ = {
@@ -80,8 +81,10 @@ class Problem(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     title = db.Column(db.String(120), nullable=False, default='Problem {}'.format(id))
     desc = db.Column(db.Text, nullable=False, default='No description added!')
+    
+    submissions = db.relationship('Submission', backref='author', lazy=True)
 
-    submissions = db.relationship('Submission', backref='problem', lazy=True)
+#     submissions = db.relationship('Submission', backref='problem', lazy=True)
 
     def __repr__(self):
         return f"Problem( id: '{self.id}', title: '{self.title}', desc: ' {self.desc}', submissions: '{self.submissions}')"
