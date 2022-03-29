@@ -4,7 +4,7 @@ email_validator
 flask-sqlalchemy
 
 # virtualenv:
-# # py -3 -m venv flask
-# # .\flask\Scripts\activate
-# # pip install flask flask-login datetime flask-wtf wtforms email-validator flask-sqlalchemy flask-bcrypt
-# # python run.py
+# py -3 -m venv flask
+# .\flask\Scripts\activate
+# pip install flask flask-login datetime flask-wtf wtforms email-validator flask-sqlalchemy flask-bcrypt
+# python run.py
