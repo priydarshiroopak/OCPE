@@ -84,6 +84,6 @@ def problems():
 def question():
     return render_template('question.html', title='Question#')
 
-@app.route("/404")
-def wrongDirect():
-    return render_template('404.html', title='404', wrongDirect=True)
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'),404
