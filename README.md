@@ -1,6 +1,5 @@
-# SElabProject
 # OCPE
-34. Online C program evaluation(OCPE):
+Online C program evaluation(OCPE):
 Online Judge is an online system used to test correctness and efficiency of programs written in
 various programming languages. They are used on programming competitions held online as
 well as on site. Most importantly they are used to practicing for programming contests. These
