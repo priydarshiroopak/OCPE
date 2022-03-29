@@ -29,3 +29,18 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+    
+    
+class SubmissionForm(FlaskForm):
+    code = StringField('Code')
+    submit = SubmitField('Submit Code')  
+   
+class PostProblemForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    #only single test case
+    testcase=TextAreaField('Test Case',validators=[DataRequired()])
+    expected_output=TextAreaField('Sample Output',validators=[DataRequired()])
+    score=TextAreaField('Score',validators=[DataRequired()])
+    submit = SubmitField('Post')
+
