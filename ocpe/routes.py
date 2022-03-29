@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
 from ocpe.forms import SignupForm, LoginForm
-from ocpe.models import User, Post
+from ocpe.models import Contestant, User, Post, Judge
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 
@@ -33,7 +33,12 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        type = form.type.data
+        if type == 'judge':
+            user = Judge(username=form.username.data, email=form.email.data, password=hashed_password, type=type)
+        else:
+            user = Contestant(username=form.username.data, email=form.email.data, password=hashed_password, type=type)
+        # user = User(username=form.username.data, email=form.email.data, password=hashed_password, type=type)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')
