@@ -46,6 +46,7 @@ class Contestant(User):
     rating = db.Column(db.Integer, nullable=False, default=0)
 
     submissions = db.relationship('Submission', backref='author', lazy=True)
+#     submissions = db.relationship('Submission', backref='submitter', lazy=True)
     # contests = db.relationship('Contest', backref='contestant', lazy=True)
 
     __mapper_args__ = {
@@ -82,6 +83,8 @@ class Problem(db.Model):
     desc = db.Column(db.Text, nullable=False, default='No description added!')
     
     submissions = db.relationship('Submission', backref='author', lazy=True)
+
+#     submissions = db.relationship('Submission', backref='problem', lazy=True)
 
     def __repr__(self):
         return f"Problem( id: '{self.id}', title: '{self.title}', desc: ' {self.desc}', submissions: '{self.submissions}')"

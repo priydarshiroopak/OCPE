@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
 from ocpe.forms import SignupForm, LoginForm
-from ocpe.models import User, Post
+from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 
