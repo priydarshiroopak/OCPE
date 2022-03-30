@@ -201,17 +201,35 @@ def solve(problemId):
             elif e.code == 404:
                 print('Submission does not exist')
         
-        db.session.add(submission)
-        db.session.commit()
         print(response['result']['status']['name'])
         print(response['result']['score'])
         print(response['result']['time'])
         print(response['result']['memory'])
         print(response['result']['signal'])
+        submission.status = response['result']['status']['name']
+        submission.score = response['result']['score']
+        submission.time = response['result']['time']
+        submission.memory = response['result']['memory']
+        submission.signal = response['result']['signal']
+        db.session.add(submission)
+        db.session.commit()
         #display these data on a new webpage
-    
-    return render_template('solve.html',title="solve", form=form, problem=problem)#where to redirect it
+        return redirect(url_for('result', submissionId=submission.id))
+
+    return render_template('solve.html',title="Solve", form=form, problem=problem)#where to redirect it
     #response contains several parameters,we can use them  
+
+
+@app.route('/result/<submissionId>',methods=['GET'])
+@login_required
+@contestant_required
+def result(submissionId):
+    submission = Submission.query.filter_by(id = submissionId).first()
+    problem = Problem.query.filter_by(id=submission.problem_id).first()
+    return render_template('result.html', title="Result", submission=submission, problem=problem)
+
+
+ 
     
 @app.errorhandler(404)
 def not_found_error(error):

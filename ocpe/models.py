@@ -39,6 +39,12 @@ class Submission(db.Model):
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     code=db.Column(db.Text,nullable=False)
+    status = db.Column(db.String)
+    score = db.Column(db.Integer)
+    time = db.Column(db.Float(precision=5))
+    memory = db.Column(db.Integer)
+    signal = db.Column(db.Integer)
+
 
     # submitter = db.relationship('Contestant', backref='submission', lazy=True)
     # problem = db.relationship('Problem', backref='submission', lazy=True)
