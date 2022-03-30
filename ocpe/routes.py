@@ -111,13 +111,22 @@ def create_problem():
     return render_template('create_problem.html', title='Problems', form=form)
 
 #this is where problems will appear as in codechef front page
-@app.route("/Practice")
+@app.route("/practice")
 @login_required
 @contestant_required
 def practice():
-     
-    return render_template('practice.html',title="Question#")		
+    problems = Problem.query.all()
+    return render_template('practice.html',title="Practice", problems=problems)		
 
+# Use of <converter: variable name> in the
+# route() decorator.
+@app.route('/problem/<problemId>', methods=['GET'])
+def problem(problemId):
+    problem = Problem.query.filter_by(id=problemId).first()
+    if problem:
+        return render_template('question.html', title= f"Problem {problemId}", problem=problem)
+    else:
+        return render_template('404.html', title="404")
 
 @app.errorhandler(404)
 def not_found_error(error):
