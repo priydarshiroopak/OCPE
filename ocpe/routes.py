@@ -171,53 +171,56 @@ def problem(problemId):
 def solve(problemId):
     form=SubmissionForm()
     problem = Problem.query.filter_by(id=problemId).first()
-    if form.validate_on_submit():
-        submission = Submission(contestant_id=current_user.GetId(), problem_id=problemId, code=form.code.data)
-        source=submission.code
-        compiler=11
-        try:
-            response = client.submissions.create(problemId, source, compiler)
-            submission.id=response['id']
-        except SphereEngineException as e:
-            if e.code == 401:
-                print('Invalid access token')
-            elif e.code == 402:
-                print('Unable to create submission')
-            elif e.code == 400:
-                print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+    if problem:
+        if form.validate_on_submit():
+            submission = Submission(contestant_id=current_user.GetId(), problem_id=problemId, code=form.code.data)
+            source=submission.code
+            compiler=11
+            try:
+                response = client.submissions.create(problemId, source, compiler)
+                submission.id=response['id']
+            except SphereEngineException as e:
+                if e.code == 401:
+                    print('Invalid access token')
+                elif e.code == 402:
+                    print('Unable to create submission')
+                elif e.code == 400:
+                    print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
 
-        try:
-            response = client.submissions.get(submission.id)
-            while response['result']['status']['code'] <=8:
-                # repeat for half time limit to avoid repeated API calls
-                sleep(min(3, problem.timeLimit / 2))
+            try:
                 response = client.submissions.get(submission.id)
+                while response['result']['status']['code'] <=8:
+                    # repeat for half time limit to avoid repeated API calls
+                    sleep(min(3, problem.timeLimit / 2))
+                    response = client.submissions.get(submission.id)
 
-        except SphereEngineException as e:
-            if e.code == 401:
-                print('Invalid access token')
-            elif e.code == 403:
-                print('Access to the submission is forbidden')
-            elif e.code == 404:
-                print('Submission does not exist')
-        
-        print(response['result']['status']['name'])
-        print(response['result']['score'])
-        print(response['result']['time'])
-        print(response['result']['memory'])
-        print(response['result']['signal'])
-        submission.status = response['result']['status']['name']
-        submission.score = response['result']['score']
-        submission.time = response['result']['time']
-        submission.memory = response['result']['memory']
-        submission.signal = response['result']['signal']
-        db.session.add(submission)
-        db.session.commit()
-        #display these data on a new webpage
-        return redirect(url_for('result', submissionId=submission.id))
+            except SphereEngineException as e:
+                if e.code == 401:
+                    print('Invalid access token')
+                elif e.code == 403:
+                    print('Access to the submission is forbidden')
+                elif e.code == 404:
+                    print('Submission does not exist')
+            
+            print(response['result']['status']['name'])
+            print(response['result']['score'])
+            print(response['result']['time'])
+            print(response['result']['memory'])
+            print(response['result']['signal'])
+            submission.status = response['result']['status']['name']
+            submission.score = response['result']['score']
+            submission.time = response['result']['time']
+            submission.memory = response['result']['memory']
+            submission.signal = response['result']['signal']
+            db.session.add(submission)
+            db.session.commit()
+            #display these data on a new webpage
+            return redirect(url_for('result', submissionId=submission.id))
 
-    return render_template('solve.html',title="Solve", form=form, problem=problem)#where to redirect it
-    #response contains several parameters,we can use them  
+        return render_template('solve.html',title="Solve", form=form, problem=problem)#where to redirect it
+        #response contains several parameters,we can use them 
+    else:
+        return render_template('404.html', title="404") 
 
 
 @app.route('/result/<submissionId>',methods=['GET'])
@@ -225,9 +228,12 @@ def solve(problemId):
 @contestant_required
 def result(submissionId):
     submission = Submission.query.filter_by(id = submissionId).first()
-    problem = Problem.query.filter_by(id=submission.problem_id).first()
-    return render_template('result.html', title="Result", submission=submission, problem=problem)
-
+    if submission:
+        problem = Problem.query.filter_by(id=submission.problem_id).first()
+        return render_template('result.html', title="Result", submission=submission, problem=problem)
+    else:
+        return render_template('404.html', title="404")
+    
 
  
     
