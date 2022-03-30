@@ -38,7 +38,7 @@ class Submission(db.Model):
     contestant_id = db.Column(db.Integer, db.ForeignKey('contestant.id'))
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
     id = db.Column(db.Integer, nullable=False, primary_key=True)
-    cases_passed = db.Column(db.Integer, default=0)
+    code=db.Column(db.Text,nullable=False)
 
     # submitter = db.relationship('Contestant', backref='submission', lazy=True)
     # problem = db.relationship('Problem', backref='submission', lazy=True)

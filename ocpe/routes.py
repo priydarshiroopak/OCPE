@@ -7,6 +7,13 @@ from ocpe.forms import PostProblemForm, SignupForm, LoginForm
 from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
+from sphere_engine import ProblemsClientV4
+from sphere_engine.exceptions import SphereEngineException
+
+accessToken='88062c39674b64a0ebde81d4e4a7ab30'
+endpoint='50e77046.compilers.sphere-engine.com'
+
+client = ProblemsClientV4(accessToken, endpoint)
 
 #have to access problems from database
 def contestant_required(func):
@@ -104,6 +111,29 @@ def create_problem():
     form = PostProblemForm()
     if form.validate_on_submit():
         problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data)
+        name = form.name.data
+	
+        try:
+            response = client.problems.create(name)
+            problem.id=response['id']
+        except SphereEngineException as e:
+            if e.code == 401:
+                print('Invalid access token')
+            elif e.code == 400:
+                print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+        try:
+            response = client.problems.createTestcase(problem.id, problem.testInput, problem.testOutput,problem.time_limit, 10)
+    # check which judge id,for now set as 10,exact judge
+    # response['number'] stores the number of created testcase
+        except SphereEngineException as e:
+            if e.code == 401:
+                 print('Invalid access token')
+            elif e.code == 403:
+                print('Access to the problem is forbidden')
+            elif e.code == 404:
+                print('Problem does not exist')    
+            elif e.code == 400:
+                print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
         db.session.add(problem)
         db.session.commit()
         flash('The problem has been added to practice section!', 'success')
@@ -118,8 +148,12 @@ def practice():
     problems = Problem.query.all()
     return render_template('practice.html',title="Practice", problems=problems)		
 
-#dynamic-routing
+
+# Use of <converter: variable name> in the
+# route() decorator.
 @app.route('/problem/<problemId>', methods=['GET'])
+@login_required
+@contestant_required
 def problem(problemId):
     problem = Problem.query.filter_by(id=problemId).first()
     if problem:
@@ -127,6 +161,51 @@ def problem(problemId):
     else:
         return render_template('404.html', title="404")
 
+@app.route('/solve/<problemId>',methods=['GET','POST'])
+@login_required
+@contestant_required
+def solve(problemId):
+    form=SubmissionForm()
+    if form.validate_on_submit():
+        submission = Submission(contestant_id=current_user.GetId(), problem_id=problemId,code=form.code.data)
+        
+    problemId=submission.id
+    source=submission.code
+    compiler=11
+
+    try:
+        response = client.submissions.create(problemId, source, compiler)
+        Submission.id=response['id']
+    except SphereEngineException as e:
+        if e.code == 401:
+            print('Invalid access token')
+        elif e.code == 402:
+            print('Unable to create submission')
+        elif e.code == 400:
+            print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+
+    
+
+    try:
+        response = client.submissions.get(Submission.id)
+    except SphereEngineException as e:
+        if e.code == 401:
+            print('Invalid access token')
+        elif e.code == 403:
+            print('Access to the submission is forbidden')
+        elif e.code == 404:
+            print('Submission does not exist')
+    
+    print(response['result.status.name'])
+    print(response['result.score'])
+    print(response['result.time'])
+    print(response['result.memory'])
+    print(response['result.signal'])
+    #display these data on a new webpage
+    
+    return render_template('',title="")#where to redirect it
+    #response contains several parameters,we can use them     
+    
 @app.errorhandler(404)
 def not_found_error(error):
     return render_template('404.html', title="404")
