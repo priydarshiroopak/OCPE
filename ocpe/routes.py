@@ -106,7 +106,7 @@ def create_problem():
 @contestant_required
 def practice():
      
-     return render_template('practice.html',title="Question#")		
+    return render_template('practice.html',title="Question#")		
 
 
 @app.errorhandler(404)
