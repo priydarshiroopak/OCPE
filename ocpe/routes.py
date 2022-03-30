@@ -1,30 +1,30 @@
 from functools import wraps
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
-from ocpe.forms import SignupForm, LoginForm
+from ocpe.forms import PostProblemForm, SignupForm, LoginForm
 from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 
 #have to access problems from database
 def contestant_required(func):
-    '''If you decorate a view with this, it will ensure that the current user is a manager'''
+    '''If you decorate a view with this, it will ensure that the current user is a contestant'''
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "contestant":
             flash('Login as contestant to access this page.', 'danger')
-            return redirect("/signin")
+            return redirect("/home")
         return func(*args, **kwargs)
     return decorated_view
 
 
 def judge_required(func):
-    '''If you decorate a view with this, it will ensure that the current user is a buyer'''
+    '''If you decorate a view with this, it will ensure that the current user is a judge'''
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "judge":
             flash('Login as judge to access this page.', 'danger')
-            return redirect("/signin")
+            return redirect("/home")
         return func(*args, **kwargs)
     return decorated_view
 
@@ -92,6 +92,8 @@ def contest():
 @login_required
 @judge_required
 def create_problem():
+    form = PostProblemForm
+
     return render_template('create_problem.html', title='Problems')
 
 #this is where problems will appear as in codechef front page
