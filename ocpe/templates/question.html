@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <!-- Post content-->
-<article>
+<article class="border-bottom mb-2">
   <!-- Post header-->
   <div class="mb-4">
     <!-- Post title-->
@@ -26,6 +26,7 @@
     <p class="fs-6 mb-4">{{ problem.testOutput }}</p>
     {% endif %}
     <!-- <p class="fs-6 mb-4">Output #</p> -->
+    <a class="btn btn-secondary py-1" href="{{ url_for('problem', problemId=problem.id) }}">Attempt</a>
   </section>
 </article><!-- Comments section-->
 

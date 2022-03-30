@@ -118,8 +118,7 @@ def practice():
     problems = Problem.query.all()
     return render_template('practice.html',title="Practice", problems=problems)		
 
-# Use of <converter: variable name> in the
-# route() decorator.
+#dynamic-routing
 @app.route('/problem/<problemId>', methods=['GET'])
 def problem(problemId):
     problem = Problem.query.filter_by(id=problemId).first()

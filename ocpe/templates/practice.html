@@ -14,7 +14,7 @@
             src="https://dummyimage.com/600x200/ced4da/6c757d.jpg" alt="..." /></figure> Post content/ -->
         <p class="fs-6 line-clamp">{{ problem.description }}</p>
       </div>
-      <a class="btn btn-secondary py-1" href="{{ url_for('problem', problemId=problem.id) }}">Solve</a>
+      <a class="btn btn-secondary py-1" href="{{ url_for('problem', problemId=problem.id) }}">View problem</a>
     </div>
   </div>
   {% endfor %}
