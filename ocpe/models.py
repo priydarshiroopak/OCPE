@@ -36,7 +36,6 @@ class Submission(db.Model):
     __tablename__='submission'
     contestant_id = db.Column(db.Integer, db.ForeignKey('contestant.id'))
     problem_id = db.Column(db.Integer, db.ForeignKey('problem.id'))
-    code=db.Column(db.Integer,db.ForeignKey('code'))
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     cases_passed = db.Column(db.Integer, default=0)
 
