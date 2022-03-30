@@ -26,6 +26,12 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.type}')"
 
+    def GetId(self):
+        return self.id
+
+    def GetType(self):
+        return self.type
+
 class Submission(db.Model):
     __tablename__='submission'
     contestant_id = db.Column(db.Integer, db.ForeignKey('contestant.id'))
@@ -82,9 +88,9 @@ class Problem(db.Model):
     title = db.Column(db.String(120), nullable=False, default='Problem {}'.format(id))
     desc = db.Column(db.Text, nullable=False, default='No description added!')
     
-    submissions = db.relationship('Submission', backref='author', lazy=True)
+    # submissions = db.relationship('Submission', backref='author', lazy=True)
 
-#     submissions = db.relationship('Submission', backref='problem', lazy=True)
+    submissions = db.relationship('Submission', backref='problem', lazy=True)
 
     def __repr__(self):
         return f"Problem( id: '{self.id}', title: '{self.title}', desc: ' {self.desc}', submissions: '{self.submissions}')"

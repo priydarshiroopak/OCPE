@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
 from ocpe.forms import SignupForm, LoginForm
@@ -11,7 +12,7 @@ def contestant_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "contestant":
-            flash("Login as manager to access this page.")
+            flash('Login as contestant to access this page.', 'danger')
             return redirect("/signin")
         return func(*args, **kwargs)
     return decorated_view
@@ -22,7 +23,7 @@ def judge_required(func):
     @wraps(func)
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "judge":
-            flash("Login as buyer to access this page.")
+            flash('Login as judge to access this page.', 'danger')
             return redirect("/signin")
         return func(*args, **kwargs)
     return decorated_view
@@ -31,7 +32,7 @@ def judge_required(func):
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('index.html', posts=posts)
+    return render_template('index.html')
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -66,8 +67,9 @@ def login():
 
 @app.route("/logout")
 def logout():
-    logout_user()
-    return redirect(url_for('home'))
+	logout_user()
+	flash('Logout Successful!', 'success')
+	return redirect(url_for('home'))
 
 
 @app.route("/account")
@@ -75,32 +77,32 @@ def logout():
 def account():
     return render_template('account.html', title='Account')
 
+# extra routes
+@app.route("/contests")
+def contests():
+   return render_template('contests.html', title='Contests')
 
-#@app.route("/contests")
-#def contests():
-#    return render_template('contests.html', title='Contests')
-
-#@app.route("/contest")
-#def contest():
-#    return render_template('contest.html', title='Contest #')
+@app.route("/contest")
+def contest():
+   return render_template('contest.html', title='Contest #')
+# end extra routes
 
 #this needs a post problem frontend html file
-@app.route("/Create_Problems")
-@judge_required
+@app.route("/create_problem")
 @login_required
-def problems():
-    
-    return render_template('Create_problems.html', title='Problems')
+@judge_required
+def create_problem():
+    return render_template('create_problem.html', title='Problems')
 
 #this is where problems will appear as in codechef front page
 @app.route("/Practice")
-@contestant_required
 @login_required
-def problems():
+@contestant_required
+def practice():
      
      return render_template('practice.html',title="Question#")		
 
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'),404
+    return render_template('404.html', title="404")

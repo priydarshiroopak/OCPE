@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section p-2">
+    <form method="POST" action="">
+        <div class="form-row row my-3">
+            <div class="form-group col-md-4">
+                <label class="mb-1" for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Problem name">
+            </div>
+            <div class="form-group col-md-8">
+                <label class="mb-1" for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Problem Title">
+            </div>
+        </div>
+        <div class="form-group">
+        <label class="mb-1" for="description">Problem Statement</label>
+        <textarea class="form-control" id="description" rows="10"></textarea>
+        </div>
+        <div class="form-row row my-3">
+            <div class="form-group col-md-6">
+                <label class="mb-1" for="input">Test Case</label>
+                <input type="text" class="form-control" id="input" placeholder="Input values">
+            </div>
+            <div class="form-group col-md-6">
+                <label class="mb-1" for="output">Output</label>
+                <input type="text" id="output" class="form-control" placeholder="Expected Output">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+</div>
+{% endblock content %}

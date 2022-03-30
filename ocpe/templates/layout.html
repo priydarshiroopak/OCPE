@@ -39,7 +39,7 @@
             <a class="nav-link" href="{{ url_for('contests') }}">Contests</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('problems') }}">Problems</a>
+            <a class="nav-link" href="{{ url_for('practice') }}">Practice</a>
           </li>
         </ul>
         <!-- <a class="navbar-text nav-link py-0" href="{{ url_for('signup') }}">Signup</a>
@@ -48,7 +48,7 @@
 
         <div class="navbar-nav">
           {% if current_user.is_authenticated %}
-          <a class="nav-item nav-link" href="{{ url_for('account') }}">Profile</a>
+          <a class="nav-item nav-link" href="{{ url_for('create_problem') }}">Create Problem</a>
           <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
           <!-- <a class="navbar-text nav-link py-0" href="#">Profile</a> -->
           {% else %}
@@ -202,7 +202,7 @@
             <ul class="list-unstyled text-muted">
               <li><a href="{{ url_for('home') }}">Home</a></li>
               <li><a href="{{ url_for('contests') }}">Contests</a></li>
-              <li><a href="{{ url_for('problems') }}">Problems</a></li>
+              <li><a href="{{ url_for('practice') }}">Practice</a></li>
               <li><a href="#">Blog</a></li>
             </ul>
           </div>
