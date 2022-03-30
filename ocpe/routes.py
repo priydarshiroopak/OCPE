@@ -9,6 +9,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 from sphere_engine import ProblemsClientV4
 from sphere_engine.exceptions import SphereEngineException
+import json
 
 accessToken='88062c39674b64a0ebde81d4e4a7ab30'
 endpoint='50e77046.compilers.sphere-engine.com'
@@ -70,8 +71,9 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        user1 = User.query.filter_by(email=form.email.data).first()
+        user2 = User.query.filter_by(username=form.username.data).first()
+        if (user1 or user2) and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
