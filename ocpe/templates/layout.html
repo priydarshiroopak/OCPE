@@ -64,7 +64,7 @@
 
 
   <main role="main" class="container">
-
+<!-- 
     {% if wrongDirect %}
     <div class="forbidden p-5">
       <h1>404</h1>
@@ -79,7 +79,7 @@
     </div>
     {% else %}
 
-
+ -->
 
 
     <div class="row py-5 px-2">
@@ -87,8 +87,9 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
           {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
         {% endif %}
@@ -170,7 +171,7 @@
           </div>
         </div>
       </div>
-      {% endif %}
+      <!-- {% endif %} -->
     </div>
   </main>
 

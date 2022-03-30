@@ -1,4 +1,5 @@
 from datetime import datetime
+from email.policy import default
 from ocpe import db, login_manager
 from flask_login import UserMixin
 
@@ -84,8 +85,12 @@ class Judge(User):
 
 class Problem(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
+    name = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(120), nullable=False, default='Problem {}'.format(id))
-    desc = db.Column(db.Text, nullable=False, default='No description added!')
+    description = db.Column(db.Text, nullable=False, default='No description added!')
+    testInput = db.Column(db.Text, default='')
+    testOutput = db.Column(db.Text, nullable=False)
+    score = db.Column(db.Integer, nullable=False, default=100)
     
     # submissions = db.relationship('Submission', backref='author', lazy=True)
 

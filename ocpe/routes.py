@@ -1,4 +1,6 @@
 from functools import wraps
+from pydoc import describe
+from turtle import title
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
 from ocpe.forms import PostProblemForm, SignupForm, LoginForm
@@ -13,7 +15,8 @@ def contestant_required(func):
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "contestant":
             flash('Login as contestant to access this page.', 'danger')
-            return redirect("/home")
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         return func(*args, **kwargs)
     return decorated_view
 
@@ -24,7 +27,8 @@ def judge_required(func):
     def decorated_view(*args, **kwargs):
         if (not current_user.is_anonymous) and current_user.GetType() != "judge":
             flash('Login as judge to access this page.', 'danger')
-            return redirect("/home")
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         return func(*args, **kwargs)
     return decorated_view
 
@@ -71,9 +75,10 @@ def login():
 
 @app.route("/logout")
 def logout():
-	logout_user()
-	flash('Logout Successful!', 'success')
-	return redirect(url_for('home'))
+    logout_user()
+    flash('Logout Successful!', 'success')
+    next_page = request.args.get('next')
+    return redirect(next_page) if next_page else redirect(url_for('home'))
 
 
 @app.route("/account")
@@ -92,13 +97,18 @@ def contest():
 # end extra routes
 
 #this needs a post problem frontend html file
-@app.route("/create_problem")
+@app.route("/create_problem", methods=['GET', 'POST'])
 @login_required
 @judge_required
 def create_problem():
-    form = PostProblemForm
-
-    return render_template('create_problem.html', title='Problems')
+    form = PostProblemForm()
+    if form.validate_on_submit():
+        problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data)
+        db.session.add(problem)
+        db.session.commit()
+        flash('The problem has been added to practice section!', 'success')
+        return redirect(url_for('login'))
+    return render_template('create_problem.html', title='Problems', form=form)
 
 #this is where problems will appear as in codechef front page
 @app.route("/Practice")
