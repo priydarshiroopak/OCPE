@@ -10,6 +10,7 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     type = RadioField('User type: ', choices=[('contestant','Contestant'),('judge','Judge')], validators=[DataRequired()])
+    # print (type.raw_data)
     # type = RadioField('User type: ', choices=[('C','Contestant'),('J','Judge'),('A','Admin')], validators=[DataRequired()])
     submit = SubmitField('Sign Up')
 
