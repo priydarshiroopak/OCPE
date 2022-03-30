@@ -1,18 +1,16 @@
 from functools import wraps
-from pydoc import describe
-from turtle import title
+from time import sleep
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
-from ocpe.forms import PostProblemForm, SignupForm, LoginForm
+from ocpe.forms import PostProblemForm, SignupForm, LoginForm, SubmissionForm
 from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 from sphere_engine import ProblemsClientV4
 from sphere_engine.exceptions import SphereEngineException
-import json
 
-accessToken='88062c39674b64a0ebde81d4e4a7ab30'
-endpoint='50e77046.compilers.sphere-engine.com'
+accessToken='a087837341bbe629b835cd9382f6d984'
+endpoint='50e77046.problems.sphere-engine.com'
 
 client = ProblemsClientV4(accessToken, endpoint)
 
@@ -71,8 +69,12 @@ def login():
         return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        user1 = User.query.filter_by(email=form.email.data).first()
-        user2 = User.query.filter_by(username=form.username.data).first()
+        user1 = User.query.filter_by(email=form.credential.data).first()
+        user2 = User.query.filter_by(username=form.credential.data).first()
+        if user1:
+            user=user1
+        else:
+            user=user2
         if (user1 or user2) and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
@@ -112,11 +114,11 @@ def contest():
 def create_problem():
     form = PostProblemForm()
     if form.validate_on_submit():
-        problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data)
+        problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data, timeLimit=form.timeLimit.data)
         name = form.name.data
 	
         try:
-            response = client.problems.create(name)
+            response = client.problems.create(name,body=problem.description, masterjudge_id=1001)
             problem.id=response['id']
         except SphereEngineException as e:
             if e.code == 401:
@@ -124,7 +126,7 @@ def create_problem():
             elif e.code == 400:
                 print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
         try:
-            response = client.problems.createTestcase(problem.id, problem.testInput, problem.testOutput,problem.time_limit, 10)
+            response = client.problems.createTestcase(problem.id, problem.testInput, problem.testOutput,problem.timeLimit, 1)
     # check which judge id,for now set as 10,exact judge
     # response['number'] stores the number of created testcase
         except SphereEngineException as e:
@@ -168,45 +170,48 @@ def problem(problemId):
 @contestant_required
 def solve(problemId):
     form=SubmissionForm()
+    problem = Problem.query.filter_by(id=problemId).first()
     if form.validate_on_submit():
-        submission = Submission(contestant_id=current_user.GetId(), problem_id=problemId,code=form.code.data)
+        submission = Submission(contestant_id=current_user.GetId(), problem_id=problemId, code=form.code.data)
+        source=submission.code
+        compiler=11
+        try:
+            response = client.submissions.create(problemId, source, compiler)
+            submission.id=response['id']
+        except SphereEngineException as e:
+            if e.code == 401:
+                print('Invalid access token')
+            elif e.code == 402:
+                print('Unable to create submission')
+            elif e.code == 400:
+                print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+
+        try:
+            response = client.submissions.get(submission.id)
+            while response['result']['status']['code'] <=8:
+                # repeat for half time limit to avoid repeated API calls
+                sleep(min(3, problem.timeLimit / 2))
+                response = client.submissions.get(submission.id)
+
+        except SphereEngineException as e:
+            if e.code == 401:
+                print('Invalid access token')
+            elif e.code == 403:
+                print('Access to the submission is forbidden')
+            elif e.code == 404:
+                print('Submission does not exist')
         
-    problemId=submission.id
-    source=submission.code
-    compiler=11
-
-    try:
-        response = client.submissions.create(problemId, source, compiler)
-        Submission.id=response['id']
-    except SphereEngineException as e:
-        if e.code == 401:
-            print('Invalid access token')
-        elif e.code == 402:
-            print('Unable to create submission')
-        elif e.code == 400:
-            print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
-
+        db.session.add(submission)
+        db.session.commit()
+        print(response['result']['status']['name'])
+        print(response['result']['score'])
+        print(response['result']['time'])
+        print(response['result']['memory'])
+        print(response['result']['signal'])
+        #display these data on a new webpage
     
-
-    try:
-        response = client.submissions.get(Submission.id)
-    except SphereEngineException as e:
-        if e.code == 401:
-            print('Invalid access token')
-        elif e.code == 403:
-            print('Access to the submission is forbidden')
-        elif e.code == 404:
-            print('Submission does not exist')
-    
-    print(response['result.status.name'])
-    print(response['result.score'])
-    print(response['result.time'])
-    print(response['result.memory'])
-    print(response['result.signal'])
-    #display these data on a new webpage
-    
-    return render_template('',title="")#where to redirect it
-    #response contains several parameters,we can use them     
+    return render_template('solve.html',title="solve", form=form, problem=problem)#where to redirect it
+    #response contains several parameters,we can use them  
     
 @app.errorhandler(404)
 def not_found_error(error):

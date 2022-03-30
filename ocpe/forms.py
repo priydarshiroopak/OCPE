@@ -27,14 +27,14 @@ class SignupForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    credential = StringField('Username/ Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
     
     
 class SubmissionForm(FlaskForm):
-    code = StringField('Code')
+    code = TextAreaField('Code', validators=[DataRequired()])
     submit = SubmitField('Submit Code')  
    
 class PostProblemForm(FlaskForm):
@@ -45,6 +45,7 @@ class PostProblemForm(FlaskForm):
     testInput = TextAreaField('Test Case')
     testOutput = TextAreaField('Expected Output',validators=[DataRequired()])
     score = StringField('Score',validators=[DataRequired()], default=100)
+    timeLimit = StringField('Time Limit(in seconds)',validators=[DataRequired()], default=10 )
     submit = SubmitField('Create Problem')
     
     def validate_name(self, name):

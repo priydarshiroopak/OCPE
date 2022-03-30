@@ -91,6 +91,7 @@ class Problem(db.Model):
     testInput = db.Column(db.Text, default='')
     testOutput = db.Column(db.Text, nullable=False)
     score = db.Column(db.Integer, nullable=False, default=100)
+    timeLimit = db.Column(db.Integer, nullable=False, default=10)
     
     # submissions = db.relationship('Submission', backref='author', lazy=True)
 

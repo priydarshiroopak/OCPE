@@ -34,17 +34,17 @@
                 </div>
             </div>
             <div class="form-group">
-                    {{ form.description.label(class="form-control-label mb-1") }}
-                    {% if form.description.errors %}
-                    {{ form.description(class="form-control is-invalid", rows="10") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.description.errors %}
-                        <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    {{ form.description(class="form-control", rows="10") }}
-                    {% endif %}
+                {{ form.description.label(class="form-control-label mb-1") }}
+                {% if form.description.errors %}
+                {{ form.description(class="form-control is-invalid", rows="10") }}
+                <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.description(class="form-control", rows="10") }}
+                {% endif %}
                 <!-- <label class="mb-1" for="description">Problem Statement</label>
                 <textarea class="form-control" id="description" rows="10"></textarea> -->
             </div>
@@ -80,21 +80,37 @@
                     <textarea class="form-control" id="testOutput" rows="3"></textarea> -->
                 </div>
             </div>
-            <div class="form-group col-md-6 mb-3">
-                {{ form.score.label(class="form-control-label mb-1") }}
-                {% if form.score.errors %}
-                {{ form.score(class="form-control is-invalid", placeholder="Max. Score: default 100") }}
-                <div class="invalid-feedback">
-                    {% for error in form.score.errors %}
-                    <span>{{ error }}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{ form.score(class="form-control", placeholder="Max. Score: default 100") }}
-                {% endif %}
-                <!-- <label class="mb-1" for="score">Score</label>
+            <div class="form-row row my-3">
+                <div class="form-group col-md-6 mb-3">
+                    {{ form.score.label(class="form-control-label mb-1") }}
+                    {% if form.score.errors %}
+                    {{ form.score(class="form-control is-invalid", placeholder="Max. Score: default 100") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.score.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.score(class="form-control", placeholder="Max. Score: default 100") }}
+                    {% endif %}
+                    <!-- <label class="mb-1" for="score">Score</label>
                 <input type="text" class="form-control" id="score" placeholder="Max. Score"> -->
+                </div>
+                <div class="form-group col-md-6 mb-3">
+                    {{ form.timeLimit.label(class="form-control-label mb-1") }}
+                    {% if form.timeLimit.errors %}
+                    {{ form.timeLimit(class="form-control is-invalid", placeholder="Time limit: default 10s") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.timeLimit.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.timeLimit(class="form-control", placeholder="Time limit: default 10s") }}
+                    {% endif %}
+                </div>
             </div>
+
 
         </fieldset>
         {{ form.submit(class="btn btn-secondary") }}

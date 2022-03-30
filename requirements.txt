@@ -2,9 +2,11 @@ flask
 flask_wtf
 email_validator
 flask-sqlalchemy
+sphere-engine
+simplejson
 
 # virtualenv:
 # py -3 -m venv flask
 # .\flask\Scripts\activate
-# pip install flask flask-login datetime flask-wtf wtforms email-validator flask-sqlalchemy flask-bcrypt
+# pip install flask flask-login datetime flask-wtf wtforms email-validator flask-sqlalchemy flask-bcrypt sphere-engine simplejson
 # python run.py
