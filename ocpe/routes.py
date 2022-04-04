@@ -258,6 +258,7 @@ def modify_problem(problemId):
                 problem.testOutput = form.testOutput.data
                 problem.score = form.score.data
                 problem.timeLimit = form.timeLimit.data
+                print(problem.description)
             #Swarup, write code to modify problem in the API here
                 
                 # try:
@@ -283,8 +284,37 @@ def modify_problem(problemId):
                 #         print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
                 # db.session.add(problem)
                 # db.session.commit()
+                try:
+                   client.problems.update(problem.id,name=problem.name,body=problem.description)
+                except SphereEngineException as e:
+                    if e.code == 401:
+                        print('Invalid access token')
+                    elif e.code == 403:
+                        print('Access to the problem is forbidden')
+                    elif e.code == 404:
+                        print('Problem does not exist')
+                    elif e.code == 400:
+                        print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+        
+#score data useless cannot change score        
+    
+                try:
+                    client.problems.updateTestcase(problem.id,0,problem.testInput,problem.testOutput,problem.timeLimit)
+                except SphereEngineException as e:
+                    if e.code == 401:
+                        print('Invalid access token')
+                    elif e.code == 403:
+                        print('Access to the problem is forbidden')
+                    elif e.code == 404:
+                        print('Non existing resource, error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+                    elif e.code == 400:
+                        print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))   
+                
                 flash('The modified and added to practice section!', 'success')
+                db.commit()
                 return redirect(url_for('home'))
+
+                
 
             return render_template('modify_problem.html',title="Modify", form=form, problem=problem)#where to redirect it
             #response contains several parameters,we can use them 
@@ -294,6 +324,7 @@ def modify_problem(problemId):
             return redirect(next_page) if next_page else redirect(url_for('home'))
     else:
         return render_template('404.html', title="404") 
+       
     
 @app.errorhandler(404)
 def not_found_error(error):
