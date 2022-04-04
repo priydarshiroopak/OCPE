@@ -2,7 +2,7 @@ from functools import wraps
 from time import sleep
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
-from ocpe.forms import PostProblemForm, SignupForm, LoginForm, SubmissionForm
+from ocpe.forms import ModifyProblemForm, PostProblemForm, SignupForm, LoginForm, SubmissionForm
 from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
@@ -92,10 +92,10 @@ def logout():
     return redirect(next_page) if next_page else redirect(url_for('home'))
 
 
-@app.route("/account")
-@login_required
-def account():
-    return render_template('account.html', title='Account')
+# @app.route("/account")
+# @login_required
+# def account():
+#     return render_template('account.html', title='Account')
 
 # extra routes
 @app.route("/contests")
@@ -114,7 +114,7 @@ def contest():
 def create_problem():
     form = PostProblemForm()
     if form.validate_on_submit():
-        problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data, timeLimit=form.timeLimit.data)
+        problem = Problem(name=form.name.data, title=form.title.data, description=form.description.data, testInput=form.testInput.data, testOutput=form.testOutput.data, score=form.score.data, timeLimit=form.timeLimit.data, judge_id = current_user.GetId())
         name = form.name.data
 	
         try:
@@ -141,7 +141,7 @@ def create_problem():
         db.session.add(problem)
         db.session.commit()
         flash('The problem has been added to practice section!', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('home'))
     return render_template('create_problem.html', title='Problems', form=form)
 
 #this is where problems will appear as in codechef front page
@@ -234,8 +234,66 @@ def result(submissionId):
     else:
         return render_template('404.html', title="404")
     
+@app.route('/problems')
+@login_required
+@judge_required
+def problems():
+    problemset = Problem.query.filter_by(judge_id = current_user.GetId())
+    return render_template('list_problem.html', title="Problems", problemset=problemset, judge=current_user)
 
- 
+
+@app.route('/modify_problem/<problemId>',methods=['GET','POST'])
+@login_required
+@judge_required
+def modify_problem(problemId):
+    problem = Problem.query.filter_by(id=problemId).first()
+    form = ModifyProblemForm(obj = problem)
+    if problem:
+        if problem.judge_id == current_user.GetId():
+            if form.validate_on_submit():
+                problem.name = form.name.data
+                problem.title = form.title.data
+                problem.description = form.description.data
+                problem.testInput = form.testInput.data
+                problem.testOutput = form.testOutput.data
+                problem.score = form.score.data
+                problem.timeLimit = form.timeLimit.data
+            #Swarup, write code to modify problem in the API here
+                
+                # try:
+                #     response = client.problems.create(name,body=problem.description, masterjudge_id=1001)
+                #     problem.id=response['id']
+                # except SphereEngineException as e:
+                #     if e.code == 401:
+                #         print('Invalid access token')
+                #     elif e.code == 400:
+                #         print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+                # try:
+                #     response = client.problems.createTestcase(problem.id, problem.testInput, problem.testOutput,problem.timeLimit, 1)
+            # check which judge id,for now set as 10,exact judge
+            # response['number'] stores the number of created testcase
+                # except SphereEngineException as e:
+                #     if e.code == 401:
+                #         print('Invalid access token')
+                #     elif e.code == 403:
+                #         print('Access to the problem is forbidden')
+                #     elif e.code == 404:
+                #         print('Problem does not exist')    
+                #     elif e.code == 400:
+                #         print('Error code: ' + str(e.error_code) + ', details available in the message: ' + str(e))
+                # db.session.add(problem)
+                # db.session.commit()
+                flash('The modified and added to practice section!', 'success')
+                return redirect(url_for('home'))
+
+            return render_template('modify_problem.html',title="Modify", form=form, problem=problem)#where to redirect it
+            #response contains several parameters,we can use them 
+        else:
+            flash('You must be the author of this problem to modify it!', 'danger')
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+    else:
+        return render_template('404.html', title="404") 
     
 @app.errorhandler(404)
 def not_found_error(error):

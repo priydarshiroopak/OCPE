@@ -53,4 +53,13 @@ class PostProblemForm(FlaskForm):
         if problem:
             raise ValidationError('This name is taken. Please choose a different one.')
 
-
+class ModifyProblemForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    #only single test case
+    testInput = TextAreaField('Test Case')
+    testOutput = TextAreaField('Expected Output',validators=[DataRequired()])
+    score = StringField('Score',validators=[DataRequired()], default=100)
+    timeLimit = StringField('Time Limit(in seconds)',validators=[DataRequired()], default=10 )
+    submit = SubmitField('Modify Problem')

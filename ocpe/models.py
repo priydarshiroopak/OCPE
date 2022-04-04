@@ -44,6 +44,7 @@ class Submission(db.Model):
     time = db.Column(db.Float(precision=5))
     memory = db.Column(db.Integer)
     signal = db.Column(db.Integer)
+    # author = db.Column(db.Integer, db.ForeignKey('contestant.id'))
 
 
     # submitter = db.relationship('Contestant', backref='submission', lazy=True)
@@ -72,7 +73,7 @@ class Judge(User):
     __tablename__ = 'judge'
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     noProblems = db.Column(db.Integer, nullable=False, default=0)
-    # contests = db.relationship('judge', backref='author', lazy=True)
+    problems = db.relationship('Problem', backref='author', lazy=True)
 
     __mapper_args__ = {
         'polymorphic_identity': 'judge'
@@ -98,10 +99,11 @@ class Problem(db.Model):
     testOutput = db.Column(db.Text, nullable=False)
     score = db.Column(db.Integer, nullable=False, default=100)
     timeLimit = db.Column(db.Integer, nullable=False, default=10)
+    judge_id = db.Column(db.Integer, db.ForeignKey('judge.id'), nullable=False)
     
-    # submissions = db.relationship('Submission', backref='author', lazy=True)
 
     submissions = db.relationship('Submission', backref='problem', lazy=True)
+    # author = db.relationship('Judge', backref='author', lazy=True)
 
     def __repr__(self):
         return f"Problem( id: '{self.id}', title: '{self.title}', desc: ' {self.desc}', submissions: '{self.submissions}')"

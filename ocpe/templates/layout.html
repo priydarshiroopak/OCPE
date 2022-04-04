@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="{{ url_for('static', filename='logos/logo_white.png') }}" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="authors" content="Roopak Priydarshi,Shah Dhruv Rajendrabhai, Swarup Padhi">
   <meta name="description" content="Online C Program evaluation website" />
@@ -39,6 +39,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('create_problem') }}">Create Problem</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('problems') }}">Modify Problem</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link" href="{{ url_for('contests') }}">Contests</a>
