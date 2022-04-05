@@ -1,4 +1,4 @@
-#!/home/swarup3204/SElabProject/.venv/bin/python3
+#!/home/swarup3204/SElabProject/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
