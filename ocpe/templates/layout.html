@@ -12,7 +12,7 @@
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <!-- font-awesome link -->
   <script src="https://kit.fontawesome.com/566f8e2e1a.js" crossorigin="anonymous"></script>
-
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link type="text/css" rel="stylesheet" href="{{ url_for( 'static', filename='stylesheet.css')}}">
 
   {% if title %}
@@ -25,7 +25,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand navbar-logo" href="{{ url_for('home') }}">
+      <a class="navbar-brand navbar-logo" href="{{ url_for('about') }}">
         <img src="{{ url_for('static', filename='logos/logo_white.png') }}" alt="OCPE" height="30" class="">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
@@ -208,13 +208,15 @@
               <!-- <li><a href="{{ url_for('contests') }}">Contests</a></li> -->
               <li><a href="{{ url_for('practice') }}">Practice</a></li>
               <li><a href="{{ url_for('create_problem') }}">Create Problem</a></li>
+              <li><a href="{{ url_for('problems') }}">Modify Problem</a></li>
+              <li><a href="{{ url_for('about') }}">About</a></li>
             </ul>
           </div>
           <div class="col-lg-4">
             <h5 class="h2 text-white">Team</h5>
             <p class="small text-muted mb-2">Roopak Priydarshi, Shah Dhruv Rajendrabhai, Swarup Padhi</p>
             <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved.
-              <a href="{{ url_for('home') }}" class="text-primary" href="#">OCPE</a>
+              <a class="text-primary" href="{{ url_for('about') }}">OCPE</a>
             </p>
           </div>
           <!-- <div class="col-lg-2 col-md-6">

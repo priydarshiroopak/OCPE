@@ -325,6 +325,9 @@ def modify_problem(problemId):
     else:
         return render_template('404.html', title="404") 
        
+@app.route('/about')
+def about():
+    return render_template('about.html', title="About")
     
 @app.errorhandler(404)
 def not_found_error(error):
