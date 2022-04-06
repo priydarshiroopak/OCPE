@@ -84,14 +84,14 @@
                 <div class="form-group col-md-6 mb-3">
                     {{ form.score.label(class="form-control-label mb-1") }}
                     {% if form.score.errors %}
-                    {{ form.score(class="form-control is-invalid", placeholder="Max. Score: default 100") }}
+                    {{ form.score(class="form-control is-invalid", placeholder="Max. Score: default 100", disabled="true") }}
                     <div class="invalid-feedback">
                         {% for error in form.score.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
                     {% else %}
-                    {{ form.score(class="form-control", placeholder="Max. Score: default 100") }}
+                    {{ form.score(class="form-control", placeholder="Max. Score: default 100", disabled="true") }}
                     {% endif %}
                     <!-- <label class="mb-1" for="score">Score</label>
                 <input type="text" class="form-control" id="score" placeholder="Max. Score"> -->
