@@ -2,12 +2,14 @@ from functools import wraps
 from time import sleep
 from flask import render_template, url_for, flash, redirect, request
 from ocpe import app, db, bcrypt
-from ocpe.forms import ModifyProblemForm, PostProblemForm, SignupForm, LoginForm, SubmissionForm
+from ocpe.forms import CodeForm, ModifyProblemForm, PostProblemForm, SignupForm, LoginForm, SubmissionForm
 from ocpe.models import User, Contestant, Judge, Submission, Problem
 from flask_login import login_user, current_user, logout_user, login_required
 from ocpe.forms import SignupForm
 from sphere_engine import ProblemsClientV4
 from sphere_engine.exceptions import SphereEngineException
+import subprocess, os
+from subprocess import PIPE
 
 accessToken='a087837341bbe629b835cd9382f6d984'
 endpoint='50e77046.problems.sphere-engine.com'
@@ -38,11 +40,43 @@ def judge_required(func):
         return func(*args, **kwargs)
     return decorated_view
 
+def compiler_output(code,inp):
+    # file existance check
+    if not os.path.exists('./files/test.c'):
+        os.open('./files/test.c',os.O_CREAT)
+    # creating a file descriptor
+    fd=os.open("./files/test.c",os.O_WRONLY)
+    # truncate the content of the file to 0 bytes to prevent overwriting
+    os.truncate(fd,0)
+    # encode the string into bytes.
+    fileadd=str.encode(code)
+    # write to the file.
+    os.write(fd,fileadd)
+    # close the file descriptor.
+    os.close(fd)
+    # Compiling the c program file and retrieving the error if any. 
+    s=subprocess.run(['gcc','-o','./files/new','./files/test.c'],stderr=PIPE,)
+    #checking whether program compiled succesfully or not.
+    if s.returncode==0:
+        #executing the program with input.
+        r=subprocess.run(["./files/new.exe"],input=inp.encode(),stdout=PIPE)
+		#return the output of the program.	
+        return r.stdout.decode("utf-8")
+    else:
+		#return the error if the program did not compile successfully
+        return s.stderr.decode("utf-8")
+
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=['GET', 'POST'])
 def home():
-    return render_template('index.html')
+    form = CodeForm()
+    if form.validate_on_submit():
+        code = form.code.data
+        inp = form.input.data
+        form.output.data = compiler_output(code, inp)
+        return render_template('index.html', form=form)
+    return render_template('index.html', form=form)
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -107,7 +141,6 @@ def contest():
    return render_template('contest.html', title='Contest #')
 # end extra routes
 
-#this needs a post problem frontend html file
 @app.route("/create_problem", methods=['GET', 'POST'])
 @login_required
 @judge_required

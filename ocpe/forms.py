@@ -1,5 +1,6 @@
 from email.policy import default
 from flask_wtf import FlaskForm
+# from flask_codemirror.fields import CodeMirrorField
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, RadioField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from ocpe.models import Problem, User
@@ -32,10 +33,15 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
     
+class CodeForm(FlaskForm):
+    code = TextAreaField('Code')
+    input = TextAreaField('Input')
+    output = TextAreaField('Output')
+    submit = SubmitField('Run')
     
 class SubmissionForm(FlaskForm):
     code = TextAreaField('Code', validators=[DataRequired()])
-    submit = SubmitField('Submit Code')  
+    submit = SubmitField('Submit Code')
    
 class PostProblemForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
